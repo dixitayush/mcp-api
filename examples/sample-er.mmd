@@ -1,0 +1,87 @@
+erDiagram
+    %% E-commerce Database Schema
+    
+    CUSTOMER {
+        int customer_id PK "Primary identifier"
+        string email UK "Unique email address"
+        string first_name
+        string last_name
+        string phone
+        datetime created_at
+    }
+    
+    ADDRESS {
+        int address_id PK
+        int customer_id FK "References Customer"
+        string street_line1
+        string street_line2
+        string city
+        string state
+        string postal_code
+        string country
+    }
+    
+    PRODUCT {
+        int product_id PK
+        string sku UK "Stock keeping unit"
+        string name
+        text description
+        decimal price
+        int category_id FK
+        boolean is_active
+        datetime created_at
+    }
+    
+    CATEGORY {
+        int category_id PK
+        string name
+        int parent_id FK "Self-referencing for subcategories"
+    }
+    
+    ORDER {
+        int order_id PK
+        int customer_id FK
+        int shipping_address_id FK
+        int billing_address_id FK
+        datetime order_date
+        string status
+        decimal total_amount
+    }
+    
+    ORDER_ITEM {
+        int order_item_id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal unit_price
+        decimal line_total
+    }
+    
+    PAYMENT {
+        int payment_id PK
+        int order_id FK,UK
+        string payment_method
+        decimal amount
+        string status
+        datetime payment_date
+    }
+    
+    INVENTORY {
+        int inventory_id PK
+        int product_id FK,UK
+        int quantity_on_hand
+        int reorder_level
+        datetime last_updated
+    }
+
+    %% Relationships
+    CUSTOMER ||--o{ ADDRESS : "has"
+    CUSTOMER ||--o{ ORDER : "places"
+    ORDER ||--|{ ORDER_ITEM : "contains"
+    PRODUCT ||--o{ ORDER_ITEM : "appears in"
+    PRODUCT }|--|| CATEGORY : "belongs to"
+    CATEGORY ||--o{ CATEGORY : "has subcategories"
+    ORDER ||--|| PAYMENT : "has"
+    PRODUCT ||--|| INVENTORY : "tracked in"
+    ORDER }o--|| ADDRESS : "ships to"
+    ORDER }o--|| ADDRESS : "bills to"

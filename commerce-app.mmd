@@ -1,0 +1,71 @@
+erDiagram
+    %% Relationships
+    USER ||--o{ ORDER : places
+    USER ||--o{ ADDRESS : has
+    CATEGORY ||--o{ PRODUCT : contains
+    PRODUCT ||--o{ ORDER_ITEM : "listed in"
+    ORDER ||--|{ ORDER_ITEM : includes
+    ORDER ||--|| PAYMENT : "paid via"
+    ORDER }o--|| ADDRESS : "ships to"
+
+    %% Entities
+    USER {
+        int id PK
+        string email
+        string password_hash
+        string first_name
+        string last_name
+        string phone
+    }
+
+    ADDRESS {
+        int id PK
+        int user_id FK
+        string street_line_1
+        string city
+        string state
+        string postal_code
+        string country
+    }
+
+    CATEGORY {
+        int id PK
+        string name
+        string description
+    }
+
+    PRODUCT {
+        int id PK
+        int category_id FK
+        string name
+        string sku
+        decimal price
+        int stock_quantity
+        string image_url
+    }
+
+    ORDER {
+        int id PK
+        int user_id FK
+        int shipping_address_id FK
+        decimal total_amount
+        string status
+        datetime created_at
+    }
+
+    ORDER_ITEM {
+        int id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal unit_price_at_purchase
+    }
+
+    PAYMENT {
+        int id PK
+        int order_id FK
+        decimal amount
+        string provider
+        string status
+        datetime transaction_date
+    }
